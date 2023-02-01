@@ -6,10 +6,14 @@
       momento.
     </span>
     <div class="nova-tarefa-form">
-      <input type="text" v-model="newTask" placeholder="Add Nova Tarefa" />
-      <button @click="addTask" :disabled="newTask.length < 1">
+      <input
+        type="text"
+        v-model="newTask"
+        @keyup.enter="addTask"
+        placeholder="Add Nova Tarefa" />
+      <!-- <button @click="addTask" :disabled="newTask.length < 1">
         Adicionar Tarefa
-      </button>
+      </button> -->
     </div>
     <!-- Atribuir um id ou uma class para essa div -->
     <div v-if="newTask.length > 0">
@@ -20,11 +24,19 @@
   <!-- <div id="lista-de-tarefas"></div> -->
   <div class="lista-de-tarefas">
     <ul>
-      <li v-for="(task, index) in latest" :key="task.id">
+      <li
+        v-for="(task, index) in latest"
+        :key="task.id"
+        @click="finishTask(task)"
+        :class="[
+            task.finished ? 'strikeout' : '',
+            task.postponed ? 'text-gray': '',
+            'simple-class'
+        ]">
         {{ index + 1 }}. {{ task.name }}
         <!-- <div id="deletar-tarefa-finalizada"></div> -->
         <div class="deletar-tarefa-finalizada" v-if="task.finished">
-          <button>Deletar Tarefa</button>
+          <button @click="removeTask(task.id)">Deletar Tarefa</button>
         </div>
         <!-- <div id="editar-tarefa"></div> -->
         <div class="editar-tarefa" v-else-if="task.edit">
@@ -66,6 +78,12 @@ export default {
       });
       this.newTask = "";
     },
+    finishTask(task){
+        task.finished = true;
+    },
+    removeTask(id) {
+        console.log('Task Removida ', id);
+    }
   },
 };
 </script>
@@ -74,5 +92,8 @@ export default {
 li::marker {
   display: none !important;
   visibility: hidden !important;
+}
+.strikeout {
+    text-decoration: line-through !important;
 }
 </style>
